@@ -4,13 +4,15 @@ import { AppService } from './app.service';
 import { BillModule } from './bill/bill.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { AuthModule } from './auth/auth.module';
 
 
 @Module({
   imports: [
     BillModule, 
     PrismaModule,
-    ScheduleModule.forRoot()
+    ScheduleModule.forRoot(),
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],
