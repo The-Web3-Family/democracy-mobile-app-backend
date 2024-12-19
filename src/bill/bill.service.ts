@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import axios from 'axios';
+import { PaginationMetadata } from 'src/utils/others/pagination-metadata.interface';
 
 
 @Injectable()
@@ -75,7 +76,7 @@ export class BillService {
 
         const bills = await this.prisma.bill.findMany({
             orderBy: {
-                createdAt: 'desc',
+                updateDate: 'desc',
             },
             skip: offset,
             take: perPage
@@ -93,7 +94,21 @@ export class BillService {
             totalPages,
         };
 
-        return bills;
+        return {bills, metadata};
+    }
+
+    async show(billId: number) {
+        // const offset = (page - 1) * perPage;
+
+        const bill = await this.prisma.bill.findFirst({
+            where: {id: billId}
+        });
+
+        if(!bill){
+            throw new NotFoundException('Bill not found!');
+        }
+
+        return bill;
     }
 
 

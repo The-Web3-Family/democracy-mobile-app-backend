@@ -6,6 +6,7 @@ import { AuthController } from './auth.controller';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { config } from 'dotenv';
 import { PrismaModule } from 'src/prisma/prisma.module';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 config();
 
@@ -18,7 +19,7 @@ config();
       signOptions: { expiresIn: '5h'},
     }),
   ],
-  providers: [AuthService, GoogleStrategy],
+  providers: [AuthService, GoogleStrategy, JwtStrategy],
   controllers: [AuthController]
 })
 export class AuthModule {}

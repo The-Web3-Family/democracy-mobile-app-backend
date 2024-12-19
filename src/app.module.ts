@@ -5,6 +5,7 @@ import { BillModule } from './bill/bill.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AuthModule } from './auth/auth.module';
+import { VoteModule } from './vote/vote.module';
 
 
 @Module({
@@ -12,7 +13,8 @@ import { AuthModule } from './auth/auth.module';
     BillModule, 
     PrismaModule,
     ScheduleModule.forRoot(),
-    AuthModule
+    AuthModule,
+    VoteModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -25,6 +25,8 @@ model Bill {
   updateDate              DateTime
   updateDateIncludingText DateTime
   url                     String        @unique
+  isVotingClosed          Boolean       @default(false)
+  votes                   Vote[]
 }
 
 model LatestAction {
@@ -36,11 +38,42 @@ model LatestAction {
 }
 
 model User {
-  id        Int     @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   name      String
-  email     String  @unique
-  googleId  String? @unique
+  email     String   @unique
+  googleId  String?  @unique
+  votes     Vote[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
+model VotingOption {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique // Example: 'yes', 'no', 'maybe', 'undecided'
+  createdAt DateTime @default(now())
+  votes     Vote[]
+}
+
+model Vote {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  billId    Int
+  optionId  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user        User          @relation(fields: [userId], references: [id])
+  bill        Bill          @relation(fields: [billId], references: [id])
+  option      VotingOption  @relation(fields: [optionId], references: [id])
+  voteHistory VoteHistory[]
+}
+
+model VoteHistory {
+  id        Int      @id @default(autoincrement())
+  voteId    Int
+  oldOption String // 'yes', 'no', 'maybe', etc.
+  newOption String // Updated option
+  updatedAt DateTime @default(now())
+
+  vote Vote @relation(fields: [voteId], references: [id])
+}
