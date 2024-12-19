@@ -69,5 +69,32 @@ export class BillService {
         }
     }
 
+    async getBills(page: number = 1, perPage: number = 10){
+        perPage = Math.max(perPage, 1);
+        const offset = (page - 1) * perPage;
+
+        const bills = await this.prisma.bill.findMany({
+            orderBy: {
+                createdAt: 'desc',
+            },
+            skip: offset,
+            take: perPage
+        });
+
+        const totalCount = await this.prisma.bill.count();
+
+        const totalPages = Math.ceil(totalCount / perPage);
+    
+        // Pagination metadata
+        const metadata: PaginationMetadata = {
+            totalCount,
+            page,
+            perPage,
+            totalPages,
+        };
+
+        return bills;
+    }
+
 
 }

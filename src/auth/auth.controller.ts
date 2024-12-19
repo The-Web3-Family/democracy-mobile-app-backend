@@ -11,9 +11,9 @@ export class AuthController {
     @UseGuards(AuthGuard('google'))
     async googleAuth(@Req() req) {}
 
-    @Get('google/callback')
+    @Get('google/redirect')
     @UseGuards(AuthGuard('google'))
-    async googleAuthRedirect(@Req() req) {
+    async googleAuthRedirect(profile: any, @Req() req) {
       return await this.authService.validateGoogleUser(req)
     }
 }
