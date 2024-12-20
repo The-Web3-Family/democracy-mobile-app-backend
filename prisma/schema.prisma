@@ -13,6 +13,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Category {
+  in_app
+  congress
+}
+
 model Bill {
   id                      Int           @id @default(autoincrement())
   congress                Int
@@ -26,6 +31,9 @@ model Bill {
   updateDateIncludingText DateTime
   url                     String        @unique
   isVotingClosed          Boolean       @default(false)
+  votingClosedDate        DateTime?
+  views                   Int           @default(0)
+  category                Category      @default(congress)
   votes                   Vote[]
 }
 
@@ -48,10 +56,12 @@ model User {
 }
 
 model VotingOption {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique // Example: 'yes', 'no', 'maybe', 'undecided'
-  createdAt DateTime @default(now())
-  votes     Vote[]
+  id           Int           @id @default(autoincrement())
+  name         String        @unique // Example: 'yes', 'no', 'maybe', 'undecided'
+  createdAt    DateTime      @default(now())
+  votes        Vote[]
+  oldHistories VoteHistory[] @relation("OldOption")
+  newHistories VoteHistory[] @relation("NewOption")
 }
 
 model Vote {
@@ -69,11 +79,13 @@ model Vote {
 }
 
 model VoteHistory {
-  id        Int      @id @default(autoincrement())
-  voteId    Int
-  oldOption String // 'yes', 'no', 'maybe', etc.
-  newOption String // Updated option
-  updatedAt DateTime @default(now())
+  id          Int      @id @default(autoincrement())
+  voteId      Int
+  oldOptionId Int? // Nullable for cases where the old option doesn't exist
+  newOptionId Int
+  updatedAt   DateTime @default(now())
 
-  vote Vote @relation(fields: [voteId], references: [id])
+  vote      Vote          @relation(fields: [voteId], references: [id])
+  oldOption VotingOption? @relation("OldOption", fields: [oldOptionId], references: [id])
+  newOption VotingOption  @relation("NewOption", fields: [newOptionId], references: [id])
 }

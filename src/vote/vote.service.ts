@@ -41,11 +41,18 @@ export class VoteService {
     
         await this.prisma.voteHistory.create({
             data: {
-                voteId: existingVote.id,
-                oldOption: existingVote.option.name, // This now works because we included `option`
-                newOption: newOption.name,
+                vote: {
+                    connect: { id: existingVote.id }, // Relate the vote using its ID
+                },
+                oldOption: {
+                    connect: { id: existingVote.option.id }, // Relate the old option using its ID
+                },
+                newOption: {
+                    connect: { id: newOption.id }, // Relate the new option using its ID
+                },
             },
         });
+        
     
         // Update the vote
         return this.prisma.vote.update({

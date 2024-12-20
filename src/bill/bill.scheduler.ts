@@ -7,7 +7,7 @@ export class BillScheduler {
   constructor(private readonly billService: BillService) {}
 
   // @Cron('0 * * * *')
-  @Cron('*/5 * * * *')
+  @Cron('*/30 * * * *')
   async crawlBills() {
     console.log('Starting scheduled task to crawl bills...');
     await this.billService.fetchAndStoreBills();

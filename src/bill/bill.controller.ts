@@ -2,6 +2,7 @@ import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { BillService } from './bill.service';
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { AuthUser } from 'src/auth/user/auth-user.decorator';
 
 @Controller('bill')
 @ApiTags('bills')
@@ -27,8 +28,10 @@ export class BillController {
     @ApiOkResponse()
     async findBill(
         @Param('id') billId: number,
+        @AuthUser() user: any
     ){
-        return await this.billService.show(billId);
+        const userId = user.id;
+        return await this.billService.show(billId, userId);
     }
 
 

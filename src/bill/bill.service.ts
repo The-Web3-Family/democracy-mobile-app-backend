@@ -97,19 +97,51 @@ export class BillService {
         return {bills, metadata};
     }
 
-    async show(billId: number) {
-        // const offset = (page - 1) * perPage;
+    async show(billId: number, userId: number) {
 
         const bill = await this.prisma.bill.findFirst({
-            where: {id: billId}
+            where: { id: billId },
         });
-
-        if(!bill){
+    
+        if (!bill) {
             throw new NotFoundException('Bill not found!');
         }
 
-        return bill;
+        const addView = await this.prisma.bill.update({
+            where: { id: billId },
+            data: {
+                views: { increment: 1 }, // Increment views count
+            },
+        });
+    
+        const userVote = await this.prisma.vote.findFirst({
+            where: { userId, billId },
+            include: { option: true }, 
+        });
+    
+        const hasVoted = !!userVote;
+    
+        const totalVotes = await this.prisma.vote.count({
+            where: { billId },
+        });
+
+        const allVotingOptions = await this.prisma.votingOption.findMany();    
+    
+        return {
+            totalVotes,
+            congressGovData:{
+                bill
+            },
+            currentUser: {
+                option: userVote ? userVote.option : null,
+                hasVoted,
+            },
+            adminData:{
+                allVotingOptions
+            }
+        };
     }
+    
 
 
 }
