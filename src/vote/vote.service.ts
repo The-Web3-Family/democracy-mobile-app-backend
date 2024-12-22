@@ -20,17 +20,15 @@ export class VoteService {
     
         const existingVote = await this.prisma.vote.findFirst({
             where: { userId, billId },
-            include: { option: true }, // Include the option relationship
+            include: { option: true }, 
         });
     
         if (!existingVote) {
-            // Create a new vote
             return await this.prisma.vote.create({
                 data: { userId, billId, optionId },
             });
         }
     
-        // Create history for the old vote
         const newOption = await this.prisma.votingOption.findUnique({
             where: { id: optionId },
         });
@@ -42,19 +40,18 @@ export class VoteService {
         await this.prisma.voteHistory.create({
             data: {
                 vote: {
-                    connect: { id: existingVote.id }, // Relate the vote using its ID
+                    connect: { id: existingVote.id },
                 },
                 oldOption: {
-                    connect: { id: existingVote.option.id }, // Relate the old option using its ID
+                    connect: { id: existingVote.option.id },
                 },
                 newOption: {
-                    connect: { id: newOption.id }, // Relate the new option using its ID
+                    connect: { id: newOption.id },
                 },
             },
         });
         
     
-        // Update the vote
         return this.prisma.vote.update({
             where: { id: existingVote.id },
             data: { optionId },

@@ -86,7 +86,6 @@ export class BillService {
 
         const totalPages = Math.ceil(totalCount / perPage);
     
-        // Pagination metadata
         const metadata: PaginationMetadata = {
             totalCount,
             page,
@@ -110,7 +109,7 @@ export class BillService {
         const addView = await this.prisma.bill.update({
             where: { id: billId },
             data: {
-                views: { increment: 1 }, // Increment views count
+                views: { increment: 1 },
             },
         });
     
