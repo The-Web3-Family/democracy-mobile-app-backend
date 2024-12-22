@@ -13,11 +13,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+<<<<<<< HEAD
 enum Category {
   in_app
   congress
 }
 
+=======
+>>>>>>> 1f59c0ba0f709782ed9c641971e396f36ec7bb3e
 model Bill {
   id                      Int           @id @default(autoincrement())
   congress                Int
@@ -30,11 +33,14 @@ model Bill {
   updateDate              DateTime
   updateDateIncludingText DateTime
   url                     String        @unique
+<<<<<<< HEAD
   isVotingClosed          Boolean       @default(false)
   votingClosedDate        DateTime?
   views                   Int           @default(0)
   category                Category      @default(congress)
   votes                   Vote[]
+=======
+>>>>>>> 1f59c0ba0f709782ed9c641971e396f36ec7bb3e
 }
 
 model LatestAction {
